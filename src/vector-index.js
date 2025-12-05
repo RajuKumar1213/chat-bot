@@ -1,58 +1,79 @@
-import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
+import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
 dotenv.config();
 
-// connect to your Atlas deployment
 const uri = process.env.MONGODB_URI;
-
 const client = new MongoClient(uri);
+
+// Colors
+const green = "\x1b[32m";
+const yellow = "\x1b[33m";
+const blue = "\x1b[34m";
+const cyan = "\x1b[36m";
+const red = "\x1b[31m";
+const reset = "\x1b[0m";
 
 async function run() {
   try {
-    const database = client.db('chatbot_db');
-    const collection = database.collection('documents');
+    console.log(`${cyan}🔌 Connecting to MongoDB…${reset}`);
+    await client.connect();
+    console.log(`${green}✓ Connected to MongoDB${reset}`);
 
-    // define your MongoDB Vector Search index
+    const db = client.db("chatbot_db");
+    const collection = db.collection("documents");
+
+    console.log(`${blue}⚙️  Creating vector search index…${reset}`);
+
     const index = {
-      name: 'vector_index',
-      type: 'vectorSearch',
+      name: "vector_index",
+      type: "vectorSearch",
       definition: {
         fields: [
           {
-            type: 'vector',
+            type: "vector",
             numDimensions: 768,
-            path: 'embedding',
-            similarity: 'dotProduct',
-            quantization: 'scalar',
+            path: "embedding",
+            similarity: "dotProduct",
+            quantization: "scalar",
           },
         ],
       },
     };
 
-    // run the helper method
     const result = await collection.createSearchIndex(index);
-    console.log(`New search index named ${result} is building.`);
+    console.log(`${green}📚 New search index "${result}" is building…${reset}`);
 
-    // wait for the index to be ready to query
     console.log(
-      'Polling to check if the index is ready. This may take up to a minute.'
+      `${yellow}⏳ Polling… Waiting for index to become queryable…${reset}`
     );
+
     let isQueryable = false;
+
     while (!isQueryable) {
       const cursor = collection.listSearchIndexes();
-      for await (const index of cursor) {
-        if (index.name === result) {
-          if (index.queryable) {
-            console.log(`${result} is ready for querying.`);
+
+      for await (const indx of cursor) {
+        if (indx.name === result) {
+          if (indx.queryable) {
+            console.log(
+              `${green}🎉 Index "${result}" is now queryable!${reset}`
+            );
             isQueryable = true;
           } else {
+            console.log(
+              `${yellow}⌛ Still building… checking again in 5s...${reset}`
+            );
             await new Promise((resolve) => setTimeout(resolve, 5000));
           }
         }
       }
     }
+  } catch (err) {
+    console.log(`${red}❌ Error: ${err.message}${reset}`);
   } finally {
     await client.close();
+    console.log(`${cyan}🔒 MongoDB connection closed.${reset}`);
   }
 }
+
 run().catch(console.dir);
