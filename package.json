@@ -8,7 +8,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "insert" : "node src/insert-doc.js",
+    "vector-index": "node src/vector-index.js"
+
   },
   "dependencies": {
     "@openrouter/sdk": "^0.2.9",
