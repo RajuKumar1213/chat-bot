@@ -9,9 +9,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
-    "insert" : "node src/insert-doc.js",
-    "vector-index": "node src/vector-index.js"
-
+    "insert": "node src/insert-doc.js",
+    "vector-index": "node src/vector-index.js",
+    "prepare": "husky",
+    "eslint": "eslint . --ext .js,.ts"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": "eslint --fix",
+    "**/*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "dependencies": {
     "@openrouter/sdk": "^0.2.9",
@@ -24,5 +29,17 @@
     "mongoose": "^9.0.0",
     "node-fetch": "^3.3.2",
     "ollama": "^0.6.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.5.0",
+    "husky": "^9.1.7",
+    "jiti": "^2.6.1",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4",
+    "typescript-eslint": "^8.48.1"
   }
 }
