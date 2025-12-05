@@ -1,0 +1,28 @@
+documentation:
+  - '**/*.md'
+  - 'docs/**/*'
+
+dependencies:
+  - 'package.json'
+  - 'package-lock.json'
+
+database:
+  - 'src/db/**/*'
+  - '**/insert-doc.js'
+  - '**/vector-index.js'
+
+api:
+  - 'src/routes/**/*'
+  - 'src/app.js'
+
+chat:
+  - 'src/chat.js'
+  - 'src/retrieve.js'
+
+utils:
+  - 'src/utils/**/*'
+
+config:
+  - '.env*'
+  - '*.config.js'
+  - '.github/**/*'
