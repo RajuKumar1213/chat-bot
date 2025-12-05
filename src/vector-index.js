@@ -1,54 +1,52 @@
-import { MongoClient } from "mongodb";
-import dotenv from "dotenv";
-
+import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
 dotenv.config();
 
+// connect to your Atlas deployment
 const uri = process.env.MONGODB_URI;
+
 const client = new MongoClient(uri);
 
 async function run() {
   try {
-    const database = client.db("chatbot_db");
-    const collection = database.collection("documents");
+    const database = client.db('chatbot_db');
+    const collection = database.collection('documents');
 
-    // 👇 create collection by inserting 1 dummy doc
-    await collection.insertOne({
-      _id: "init",
-      text: "initial document",
-      embedding: Array(768).fill(0),
-    });
-
+    // define your MongoDB Vector Search index
     const index = {
-      name: "vector_index",
-      type: "vectorSearch",
+      name: 'vector_index',
+      type: 'vectorSearch',
       definition: {
         fields: [
           {
-            type: "vector",
+            type: 'vector',
             numDimensions: 768,
-            path: "embedding",
-            similarity: "cosine",
+            path: 'embedding',
+            similarity: 'dotProduct',
+            quantization: 'scalar',
           },
         ],
       },
     };
 
+    // run the helper method
     const result = await collection.createSearchIndex(index);
     console.log(`New search index named ${result} is building.`);
 
-    console.log("Polling for index readiness...");
+    // wait for the index to be ready to query
+    console.log(
+      'Polling to check if the index is ready. This may take up to a minute.'
+    );
     let isQueryable = false;
-
     while (!isQueryable) {
       const cursor = collection.listSearchIndexes();
-
-      for await (const idx of cursor) {
-        if (idx.name.startsWith("vector_index")) {
-          if (idx.queryable) {
-            console.log(`Index ${idx.name} is ready.`);
+      for await (const index of cursor) {
+        if (index.name === result) {
+          if (index.queryable) {
+            console.log(`${result} is ready for querying.`);
             isQueryable = true;
           } else {
-            await new Promise((r) => setTimeout(r, 3000));
+            await new Promise((resolve) => setTimeout(resolve, 5000));
           }
         }
       }
@@ -57,5 +55,4 @@ async function run() {
     await client.close();
   }
 }
-
 run().catch(console.dir);

@@ -22,14 +22,12 @@
 //   return data.data[0].embedding; // <-- FIXED
 // }
 
-import ollama from "ollama";
+import ollama from 'ollama';
 
-const getEmbedding = async (text) => {
+export const getEmbedding = async (text) => {
   const response = await ollama.embeddings({
-    model: "embeddinggemma",
+    model: 'embeddinggemma',
     prompt: text,
   });
   return response.embedding;
 };
-
-export default getEmbedding;
