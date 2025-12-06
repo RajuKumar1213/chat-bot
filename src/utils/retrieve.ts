@@ -1,13 +1,13 @@
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
-import { getEmbedding } from './utils/ollama-embed.js';
+import { getEmbedding } from './ollama-embed.js';
 
 dotenv.config();
 
-const client = new MongoClient(process.env.MONGODB_URI);
+const client = new MongoClient(process.env.MONGODB_URI!);
 
-export async function search(query) {
-  if (!client.isConnected?.()) await client.connect(); // only connect if not connected
+export async function search(query: string) {
+  await client.connect();
   const db = client.db('chatbot_db');
   const collection = db.collection('documents');
 
