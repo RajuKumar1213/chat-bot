@@ -1,8 +1,7 @@
-import { httpServer } from "./src/app.js";
-import connectDB from "./src/db/index.js";
+import { httpServer } from './app';
+import connectDB from './db/index';
 
-
-const PORT = process.env.PORT || 8000;
+const PORT = Number(process.env.PORT) || 8000;
 
 connectDB()
   .then(() => {
@@ -14,7 +13,3 @@ connectDB()
   .catch((error) => {
     console.log('MONGODB CONNECTION ERROR', error);
   });
-
-
-
-
