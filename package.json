@@ -15,7 +15,7 @@
     "eslint": "eslint . --ext .js,.ts"
   },
   "lint-staged": {
-    "**/*.{js,ts,jsx,tsx}": "eslint --fix",
+    "**/*.{js,ts,jsx,tsx,json}": "eslint --fix",
     "**/*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "dependencies": {
