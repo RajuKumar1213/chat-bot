@@ -24,8 +24,8 @@ async function run() {
     await client.connect();
     console.log(`${green}✓ Connected to MongoDB${reset}`);
 
-    const db = client.db('chatbot_db');
-    const collection = db.collection('documents');
+    const db = client.db('chatbot');
+    const collection = db.collection('vectors');
 
     console.log(`${blue}⚙️  Creating vector search index…${reset}`);
 

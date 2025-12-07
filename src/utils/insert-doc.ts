@@ -2,6 +2,7 @@ import fs from 'fs';
 import dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
 import { getEmbedding } from './ollama-embed.js';
+import { chunkText } from '../helpers/chunkText.js';
 
 dotenv.config();
 const client = new MongoClient(process.env.MONGODB_URI!);
@@ -13,16 +14,13 @@ const cyan = '\x1b[36m';
 const red = '\x1b[31m';
 const reset = '\x1b[0m';
 
-function chunkText(text: string, chunkSize = 300) {
-  const words = text.split(' ');
-  const chunks = [];
-  for (let i = 0; i < words.length; i += chunkSize) {
-    chunks.push(words.slice(i, i + chunkSize).join(' '));
-  }
-  return chunks;
+interface UploadData {
+  text: string;
+  fileName: string;
+  filePath: string;
 }
 
-async function run() {
+export async function injectToVectorDB(data: UploadData) {
   try {
     console.log(`${cyan}🔌 Connecting to MongoDB…${reset}`);
     await client.connect();
@@ -31,9 +29,7 @@ async function run() {
     const db = client.db('chatbot_db');
     const collection = db.collection('documents');
 
-    // const bigText = fs.readFileSync("./src/big-doc.txt", "utf8");
-    const bigText = fs.readFileSync('./src/docs/alok.txt', 'utf8');
-    const chunks = chunkText(bigText);
+    const chunks = chunkText(data.text);
 
     console.log(`${yellow}📦 Total Chunks to Insert: ${chunks.length}${reset}`);
     console.log(`${cyan}🚀 Starting insertion…${reset}`);
@@ -61,5 +57,3 @@ async function run() {
     console.log(`${yellow}🔒 MogoDB connection closed${reset}`);
   }
 }
-
-run();

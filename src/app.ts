@@ -25,7 +25,9 @@ app.use(cookieParser());
 
 // import routers
 import chatRouter from './routes/chat.route';
+import uploadRouter from './routes/upload.route';
 
 app.use('/api/chat', chatRouter);
+app.use('/api/upload', uploadRouter);
 
 export { httpServer, app };
