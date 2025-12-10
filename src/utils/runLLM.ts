@@ -1,6 +1,6 @@
 import { OpenRouter } from '@openrouter/sdk';
 import { search } from './retrieve';
-import { genzPrompts } from '../config/prompts';
+import { officialPrompt } from '../config/prompts';
 
 const openRouter = new OpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY! || '',
@@ -18,7 +18,8 @@ export const runLLM = async (query: string) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const context = cleanedChunks.map((c: any) => c.text).join('\n\n');
 
-  const prompt = genzPrompts(context, query);
+  // const prompt = genzPrompts(context, query);
+  const prompt = officialPrompt(context, query);
 
   const stream = await openRouter.chat.send({
     model: 'amazon/nova-2-lite-v1:free',
