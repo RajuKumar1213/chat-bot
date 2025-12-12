@@ -1,5 +1,6 @@
 import { httpServer } from './app';
 import connectDB from './db/index';
+import './workers/upload.worker';
 
 const PORT = Number(process.env.PORT) || 8000;
 
