@@ -28,9 +28,11 @@ export const redis = {
   },
 
   get: (key: string) => client.get(key),
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   set: (key: string, value: string, options?: any) =>
     client.set(key, value, options),
 
   del: (key: string) => client.del(key),
 };
+
+export const redisClient = client;

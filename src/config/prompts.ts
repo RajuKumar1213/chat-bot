@@ -92,7 +92,7 @@ Follow these rules very strictly:
 --- Conversation History ---
 ${formattedHistory}
 
---- Data ---
+--- Context Data ---
 ${context}
 
 --- User Query ---
